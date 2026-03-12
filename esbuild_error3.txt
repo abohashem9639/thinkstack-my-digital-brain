@@ -1,0 +1,58 @@
+﻿node.exe : Γû▓ [WARNING] 
+"import.meta" is not 
+available with the "iife" 
+output format and will be 
+empty [empty-import-meta]
+At C:\Program 
+Files\nodejs\npx.ps1:29 
+char:3
++   & $NODE_EXE $NPX_CLI_JS 
+$args
++   
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo           
+   : NotSpecified: (Γû▓ [WA  
+  RNING] "...ty-import-met   
+ a]:String) [], RemoteExc    
+eption
+    + FullyQualifiedErrorId  
+   : NativeCommandError
+ 
+
+    src/lib/supabase.ts:3:20:
+      3 Γöé const 
+supabaseUrl = import.meta.env
+.VITE_SUPABASE_URL as string;
+        Γò╡                  
+   ~~~~~~~~~~~
+
+  You need to set the output 
+format to "esm" for 
+"import.meta" to work 
+correctly.
+
+Γû▓ [WARNING] "import.meta" 
+is not available with the 
+"iife" output format and 
+will be empty 
+[empty-import-meta]
+
+    src/lib/supabase.ts:4:24:
+      4 Γöé const 
+supabaseAnonKey = import.meta
+.env.VITE_SUPABASE_ANON_KEY 
+as s...
+        Γò╡                  
+       ~~~~~~~~~~~
+
+  You need to set the output 
+format to "esm" for 
+"import.meta" to work 
+correctly.
+
+2 warnings
+
+  out.js   3.6mb
+  out.css  2.9kb
+
+Done in 169ms

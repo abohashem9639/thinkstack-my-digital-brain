@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&family=Cairo:wght@300;400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -52,7 +52,7 @@
     --info: 199 89% 48%;
     --info-foreground: 0 0% 100%;
 
-    --font-sans: 'Inter', system-ui, sans-serif;
+    --font-sans: 'IBM Plex Sans Arabic', 'Parastoo', 'Inter', system-ui, sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
   }
 }
@@ -98,17 +98,44 @@
     scrollbar-width: thin;
     scrollbar-color: hsl(var(--border)) transparent;
   }
+}
 
-  .scrollbar-thin::-webkit-scrollbar {
-    width: 6px;
-  }
+/* ─── Global Scrollbar Styling ──────────────────────────────────── */
 
-  .scrollbar-thin::-webkit-scrollbar-track {
-    background: transparent;
-  }
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(220 14% 16%) transparent;
+}
 
-  .scrollbar-thin::-webkit-scrollbar-thumb {
-    background: hsl(var(--border));
-    border-radius: 3px;
-  }
+/* WebKit / Chromium */
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: hsl(220 14% 20%);
+  border-radius: 9999px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: hsl(220 14% 28%);
+}
+
+*::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* RTL Support */
+[dir="rtl"] body {
+  font-family: 'IBM Plex Sans Arabic', 'Parastoo', 'Inter', system-ui, sans-serif;
+}
+
+[dir="rtl"] .font-mono {
+  font-family: 'JetBrains Mono', 'IBM Plex Sans Arabic', monospace;
 }

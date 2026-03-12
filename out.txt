@@ -1,0 +1,28 @@
+[36mvite v5.4.19 [32mbuilding for production...[36m[39m
+transforming...
+Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+[32m✓[39m 1475 modules transformed.
+[31mx[39m Build failed in 2.46s
+[31merror during build:
+[31msrc/App.tsx (20:7): "default" is not exported by "src/pages/FocusPage.tsx", imported by "src/App.tsx".[31m
+file: [36mC:/Users/Salahuddin/OneDrive/Desktop/My/thinkstack-my-digital-brain/src/App.tsx:20:7[31m
+[33m
+18: import TechLibraryPage from "./pages/TechLibraryPage";
+19: import HabitsPage from "./pages/HabitsPage";
+20: import FocusPage from "./pages/FocusPage";
+           ^
+21: import AuthPage from "./pages/AuthPage";
+22: import NotFound from "./pages/NotFound";
+[31m
+    at getRollupError (file:///C:/Users/Salahuddin/OneDrive/Desktop/My/thinkstack-my-digital-brain/node_modules/rollup/dist/es/shared/parseAst.js:402:41)
+    at error (file:///C:/Users/Salahuddin/OneDrive/Desktop/My/thinkstack-my-digital-brain/node_modules/rollup/dist/es/shared/parseAst.js:398:42)
+    at Module.error (file:///C:/Users/Salahuddin/OneDrive/Desktop/My/thinkstack-my-digital-brain/node_modules/rollup/dist/es/shared/node-entry.js:17040:16)
+    at Module.traceVariable (file:///C:/Users/Salahuddin/OneDrive/Desktop/My/thinkstack-my-digital-brain/node_modules/rollup/dist/es/shared/node-entry.js:17452:29)
+    at ModuleScope.findVariable (file:///C:/Users/Salahuddin/OneDrive/Desktop/My/thinkstack-my-digital-brain/node_modules/rollup/dist/es/shared/node-entry.js:15070:39)
+    at ReturnValueScope.findVariable (file:///C:/Users/Salahuddin/OneDrive/Desktop/My/thinkstack-my-digital-brain/node_modules/rollup/dist/es/shared/node-entry.js:5673:38)
+    at FunctionBodyScope.findVariable (file:///C:/Users/Salahuddin/OneDrive/Desktop/My/thinkstack-my-digital-brain/node_modules/rollup/dist/es/shared/node-entry.js:5673:38)
+    at Identifier.bind (file:///C:/Users/Salahuddin/OneDrive/Desktop/My/thinkstack-my-digital-brain/node_modules/rollup/dist/es/shared/node-entry.js:5447:40)
+    at CallExpression.bind (file:///C:/Users/Salahuddin/OneDrive/Desktop/My/thinkstack-my-digital-brain/node_modules/rollup/dist/es/shared/node-entry.js:2825:28)
+    at CallExpression.bind (file:///C:/Users/Salahuddin/OneDrive/Desktop/My/thinkstack-my-digital-brain/node_modules/rollup/dist/es/shared/node-entry.js:12179:15)[39m

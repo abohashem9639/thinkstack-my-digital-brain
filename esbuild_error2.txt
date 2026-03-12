@@ -1,0 +1,144 @@
+﻿node.exe : Γû▓ [WARNING] 
+"import.meta" is not 
+available with the "iife" 
+output format and will be 
+empty [empty-import-meta]
+At C:\Program 
+Files\nodejs\npx.ps1:29 
+char:3
++   & $NODE_EXE $NPX_CLI_JS 
+$args
++   
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo           
+   : NotSpecified: (Γû▓ [WA  
+  RNING] "...ty-import-met   
+ a]:String) [], RemoteExc    
+eption
+    + FullyQualifiedErrorId  
+   : NativeCommandError
+ 
+
+    src/lib/supabase.ts:3:20:
+      3 Γöé const 
+supabaseUrl = import.meta.env
+.VITE_SUPABASE_URL as string;
+        Γò╡                  
+   ~~~~~~~~~~~
+
+  You need to set the output 
+format to "esm" for 
+"import.meta" to work 
+correctly.
+
+Γû▓ [WARNING] "import.meta" 
+is not available with the 
+"iife" output format and 
+will be empty 
+[empty-import-meta]
+
+    src/lib/supabase.ts:4:24:
+      4 Γöé const 
+supabaseAnonKey = import.meta
+.env.VITE_SUPABASE_ANON_KEY 
+as s...
+        Γò╡                  
+       ~~~~~~~~~~~
+
+  You need to set the output 
+format to "esm" for 
+"import.meta" to work 
+correctly.
+
+X [ERROR] No matching export 
+in "node_modules/react-icons/
+lu/index.mjs" for import 
+"LuBarChart3"
+
+    src/pages/PomodoroPage.ts
+x:4:89:
+      4 Γöé ...teCcw, 
+LuCoffee as Coffee, 
+LuBarChart3 as BarChart3 } 
+from "reac...
+        Γò╡                  
+             ~~~~~~~~~~~
+
+X [ERROR] No matching export 
+in "node_modules/react-icons/
+lu/index.mjs" for import 
+"LuCheckCircle2"
+
+    
+src/pages/GoalsPage.tsx:4:45:
+      4 Γöé ...lus, LuTarget 
+as Target, LuCheckCircle2 as 
+CheckCircle2, LuCircl...
+        Γò╡                  
+           ~~~~~~~~~~~~~~
+
+X [ERROR] No matching export 
+in "node_modules/react-icons/
+lu/index.mjs" for import 
+"LuCheckCircle2"
+
+    src/pages/HabitsPage.tsx:
+4:43:
+      4 Γöé ... Plus, 
+LuFlame as Flame, 
+LuCheckCircle2 as 
+CheckCircle2, LuCircl...
+        Γò╡                  
+           ~~~~~~~~~~~~~~
+
+2 warnings and 3 errors
+node:child_process:922
+    throw err;
+    ^
+
+Error: Command failed: C:\Use
+rs\Salahuddin\OneDrive\Deskto
+p\My\thinkstack-my-digital-br
+ain\node_modules\@esbuild\win
+32-x64\esbuild.exe 
+src/main.tsx --bundle 
+--outfile=out.js
+    at genericNodeError 
+(node:internal/errors:983:15)
+    at wrappedFn 
+(node:internal/errors:537:14)
+    at checkExecSyncError 
+(node:child_process:883:11)
+    at Object.execFileSync 
+(node:child_process:919:15)
+    at Object.<anonymous> (C:
+\Users\Salahuddin\OneDrive\De
+sktop\My\thinkstack-my-digita
+l-brain\node_modules\esbuild\
+bin\esbuild:222:28)
+    at Module._compile (node:
+internal/modules/cjs/loader:1
+730:14)
+    at Object..js (node:inter
+nal/modules/cjs/loader:1895:1
+0)
+    at Module.load (node:inte
+rnal/modules/cjs/loader:1465:
+32)
+    at Function._load (node:i
+nternal/modules/cjs/loader:12
+82:12)
+    at 
+TracingChannel.traceSync (nod
+e:diagnostics_channel:322:14)
+ {
+  status: 1,
+  signal: null,
+  output: [ null, null, null 
+],
+  pid: 17544,
+  stdout: null,
+  stderr: null
+}
+
+Node.js v22.17.0

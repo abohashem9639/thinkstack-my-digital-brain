@@ -1,8 +1,18 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
+import { useTranslation } from "react-i18next";
 
 export function AppLayout({ children }: { children: ReactNode }) {
+  const { i18n } = useTranslation();
+  const isRTL = i18n.language === "ar";
+
+  // Sync dir attribute with language changes
+  useEffect(() => {
+    document.documentElement.dir = isRTL ? "rtl" : "ltr";
+    document.documentElement.lang = i18n.language;
+  }, [isRTL, i18n.language]);
+
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full">

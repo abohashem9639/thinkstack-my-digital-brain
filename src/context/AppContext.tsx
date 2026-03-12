@@ -1,17 +1,8 @@
-import { useState, createContext, useContext, ReactNode } from "react";
+import { useState, createContext, useContext, ReactNode, useCallback } from "react";
+import { useLocalStorage } from "@/hooks/use-local-storage";
+import { useAuth } from "@/context/AuthContext";
 
-interface AppState {
-  courses: Course[];
-  setCourses: (courses: Course[]) => void;
-  tasks: Task[];
-  setTasks: (tasks: Task[]) => void;
-  ideas: Idea[];
-  setIdeas: (ideas: Idea[]) => void;
-  snippets: Snippet[];
-  setSnippets: (snippets: Snippet[]) => void;
-  studySessions: StudySession[];
-  setStudySessions: (sessions: StudySession[]) => void;
-}
+// ─── Types ─────────────────────────────────────────────────────────
 
 export interface Course {
   id: string;
@@ -42,6 +33,13 @@ export interface Assignment {
   status: "pending" | "in-progress" | "completed";
   progress: number;
   courseId: string;
+  subtasks?: Subtask[];
+}
+
+export interface Subtask {
+  id: string;
+  title: string;
+  completed: boolean;
 }
 
 export interface Exam {
@@ -50,6 +48,7 @@ export interface Exam {
   date: string;
   readiness: number;
   courseId: string;
+  studyPlan?: string;
 }
 
 export interface Task {
@@ -85,96 +84,163 @@ export interface Snippet {
 export interface StudySession {
   id: string;
   courseId: string;
-  duration: number; // minutes
+  duration: number;
   date: string;
   type: "pomodoro" | "free";
 }
 
-const defaultCourses: Course[] = [
-  {
-    id: "1",
-    name: "Data Structures & Algorithms",
-    code: "CS201",
-    professor: "Dr. Ahmad",
-    color: "hsl(217, 91%, 60%)",
-    description: "Advanced data structures and algorithm analysis",
-    semester: "Fall 2025",
-    lectures: [
-      { id: "l1", title: "Binary Trees", date: "2025-09-15", notes: "Covered traversal methods: inorder, preorder, postorder", courseId: "1" },
-      { id: "l2", title: "Graph Algorithms", date: "2025-09-22", notes: "BFS and DFS implementations", courseId: "1" },
-    ],
-    assignments: [
-      { id: "a1", title: "Implement AVL Tree", description: "Full AVL tree with rotations", dueDate: "2025-10-01", status: "in-progress", progress: 60, courseId: "1" },
-    ],
-    exams: [
-      { id: "e1", title: "Midterm Exam", date: "2025-10-15", readiness: 45, courseId: "1" },
-    ],
-  },
-  {
-    id: "2",
-    name: "Operating Systems",
-    code: "CS301",
-    professor: "Dr. Sara",
-    color: "hsl(142, 71%, 45%)",
-    description: "Process management, memory, file systems",
-    semester: "Fall 2025",
-    lectures: [],
-    assignments: [
-      { id: "a2", title: "Process Scheduler Simulation", description: "Simulate FCFS, SJF, Round Robin", dueDate: "2025-10-05", status: "pending", progress: 0, courseId: "2" },
-    ],
-    exams: [],
-  },
-  {
-    id: "3",
-    name: "Database Systems",
-    code: "CS305",
-    professor: "Dr. Khaled",
-    color: "hsl(38, 92%, 55%)",
-    description: "Relational databases, SQL, normalization",
-    semester: "Fall 2025",
-    lectures: [],
-    assignments: [],
-    exams: [],
-  },
-];
+export interface Goal {
+  id: string;
+  title: string;
+  description: string;
+  type: "short-term" | "long-term";
+  category: "academic" | "career" | "personal" | "project";
+  progress: number;
+  targetDate?: string;
+  milestones: Milestone[];
+  createdAt: string;
+  status: "active" | "completed" | "paused";
+}
 
-const defaultTasks: Task[] = [
-  { id: "t1", title: "Implement AVL rotations", description: "Complete left and right rotations for AVL tree assignment", status: "in-progress", priority: "high", category: "academic", dueDate: "2025-10-01", courseId: "1" },
-  { id: "t2", title: "Review OS chapter 5", description: "Process synchronization concepts", status: "todo", priority: "medium", category: "academic", courseId: "2" },
-  { id: "t3", title: "Fix auth bug in ThinkStack", description: "Login redirect not working properly", status: "todo", priority: "high", category: "project" },
-  { id: "t4", title: "Write blog post on React hooks", description: "Share learnings about custom hooks", status: "done", priority: "low", category: "personal" },
-  { id: "t5", title: "Setup CI/CD pipeline", description: "Configure GitHub Actions for auto deployment", status: "todo", priority: "medium", category: "project" },
-];
+export interface Milestone {
+  id: string;
+  title: string;
+  completed: boolean;
+}
 
-const defaultIdeas: Idea[] = [
-  { id: "i1", title: "AI Study Planner", description: "Use AI to generate optimal study schedules based on exam dates and difficulty", category: "app", tags: ["AI", "productivity"], createdAt: "2025-09-10" },
-  { id: "i2", title: "Code Review Bot", description: "GitHub bot that provides automated code review suggestions", category: "feature", tags: ["GitHub", "automation"], createdAt: "2025-09-12" },
-];
+export interface KnowledgeEntry {
+  id: string;
+  title: string;
+  content: string;
+  category: string;
+  tags: string[];
+  linkedTopics: string[];
+  createdAt: string;
+  updatedAt: string;
+}
 
-const defaultSnippets: Snippet[] = [
-  { id: "s1", title: "React useDebounce Hook", code: `import { useState, useEffect } from 'react';\n\nfunction useDebounce<T>(value: T, delay: number): T {\n  const [debouncedValue, setDebouncedValue] = useState<T>(value);\n  useEffect(() => {\n    const handler = setTimeout(() => setDebouncedValue(value), delay);\n    return () => clearTimeout(handler);\n  }, [value, delay]);\n  return debouncedValue;\n}`, language: "typescript", tags: ["react", "hooks"], description: "Custom debounce hook for React", createdAt: "2025-09-01" },
-  { id: "s2", title: "Python Quick Sort", code: `def quicksort(arr):\n    if len(arr) <= 1:\n        return arr\n    pivot = arr[len(arr) // 2]\n    left = [x for x in arr if x < pivot]\n    middle = [x for x in arr if x == pivot]\n    right = [x for x in arr if x > pivot]\n    return quicksort(left) + middle + quicksort(right)`, language: "python", tags: ["algorithm", "sorting"], description: "Simple quicksort implementation", createdAt: "2025-09-05" },
-];
+export interface TechEntry {
+  id: string;
+  name: string;
+  category: "language" | "framework" | "tool" | "concept" | "database";
+  proficiency: "beginner" | "intermediate" | "advanced" | "expert";
+  notes: string;
+  resources: string[];
+  tags: string[];
+  createdAt: string;
+}
 
-const defaultStudySessions: StudySession[] = [
-  { id: "ss1", courseId: "1", duration: 50, date: "2025-09-20", type: "pomodoro" },
-  { id: "ss2", courseId: "1", duration: 25, date: "2025-09-20", type: "pomodoro" },
-  { id: "ss3", courseId: "2", duration: 45, date: "2025-09-21", type: "free" },
-  { id: "ss4", courseId: "3", duration: 30, date: "2025-09-21", type: "pomodoro" },
-  { id: "ss5", courseId: "1", duration: 50, date: "2025-09-22", type: "pomodoro" },
-];
+export interface Habit {
+  id: string;
+  title: string;
+  icon: string;
+  frequency: "daily" | "weekly";
+  completedDates: string[];
+  createdAt: string;
+  color: string;
+}
+
+export interface UserPreferences {
+  language: string;
+  theme: "light" | "dark" | "system";
+  sidebarCollapsed: boolean;
+}
+
+// ─── Context ───────────────────────────────────────────────────────
+
+interface AppState {
+  courses: Course[];
+  setCourses: (courses: Course[] | ((prev: Course[]) => Course[])) => void;
+  tasks: Task[];
+  setTasks: (tasks: Task[] | ((prev: Task[]) => Task[])) => void;
+  ideas: Idea[];
+  setIdeas: (ideas: Idea[] | ((prev: Idea[]) => Idea[])) => void;
+  snippets: Snippet[];
+  setSnippets: (snippets: Snippet[] | ((prev: Snippet[]) => Snippet[])) => void;
+  studySessions: StudySession[];
+  setStudySessions: (sessions: StudySession[] | ((prev: StudySession[]) => StudySession[])) => void;
+  goals: Goal[];
+  setGoals: (goals: Goal[] | ((prev: Goal[]) => Goal[])) => void;
+  knowledge: KnowledgeEntry[];
+  setKnowledge: (entries: KnowledgeEntry[] | ((prev: KnowledgeEntry[]) => KnowledgeEntry[])) => void;
+  techLibrary: TechEntry[];
+  setTechLibrary: (entries: TechEntry[] | ((prev: TechEntry[]) => TechEntry[])) => void;
+  habits: Habit[];
+  setHabits: (habits: Habit[] | ((prev: Habit[]) => Habit[])) => void;
+  preferences: UserPreferences;
+  setPreferences: (prefs: UserPreferences | ((prev: UserPreferences) => UserPreferences)) => void;
+  focusMode: boolean;
+  setFocusMode: (v: boolean) => void;
+  focusTaskId: string | null;
+  setFocusTaskId: (id: string | null) => void;
+}
+
+// ─── Defaults ──────────────────────────────────────────────────────
+
+const defaultCourses: Course[] = [];
+const defaultTasks: Task[] = [];
+const defaultIdeas: Idea[] = [];
+const defaultSnippets: Snippet[] = [];
+const defaultStudySessions: StudySession[] = [];
+const defaultGoals: Goal[] = [];
+const defaultKnowledge: KnowledgeEntry[] = [];
+const defaultTechLibrary: TechEntry[] = [];
+const defaultHabits: Habit[] = [];
+const defaultPreferences: UserPreferences = {
+  language: "en",
+  theme: "dark",
+  sidebarCollapsed: false,
+};
+
+// ─── Provider ──────────────────────────────────────────────────────
 
 const AppContext = createContext<AppState | undefined>(undefined);
 
+import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
+
 export function AppProvider({ children }: { children: ReactNode }) {
-  const [courses, setCourses] = useState<Course[]>(defaultCourses);
-  const [tasks, setTasks] = useState<Task[]>(defaultTasks);
-  const [ideas, setIdeas] = useState<Idea[]>(defaultIdeas);
-  const [snippets, setSnippets] = useState<Snippet[]>(defaultSnippets);
-  const [studySessions, setStudySessions] = useState<StudySession[]>(defaultStudySessions);
+  const { user } = useAuth();
+  const userId = user?.id || "guest";
+  const { i18n } = useTranslation();
+
+  const [courses, setCourses] = useLocalStorage<Course[]>(`ts-courses-${userId}`, defaultCourses);
+  const [tasks, setTasks] = useLocalStorage<Task[]>(`ts-tasks-${userId}`, defaultTasks);
+  const [ideas, setIdeas] = useLocalStorage<Idea[]>(`ts-ideas-${userId}`, defaultIdeas);
+  const [snippets, setSnippets] = useLocalStorage<Snippet[]>(`ts-snippets-${userId}`, defaultSnippets);
+  const [studySessions, setStudySessions] = useLocalStorage<StudySession[]>(`ts-sessions-${userId}`, defaultStudySessions);
+  const [goals, setGoals] = useLocalStorage<Goal[]>(`ts-goals-${userId}`, defaultGoals);
+  const [knowledge, setKnowledge] = useLocalStorage<KnowledgeEntry[]>(`ts-knowledge-${userId}`, defaultKnowledge);
+  const [techLibrary, setTechLibrary] = useLocalStorage<TechEntry[]>(`ts-tech-${userId}`, defaultTechLibrary);
+  const [habits, setHabits] = useLocalStorage<Habit[]>(`ts-habits-${userId}`, defaultHabits);
+  const [preferences, setPreferences] = useLocalStorage<UserPreferences>(`ts-preferences-${userId}`, defaultPreferences);
+  const [focusMode, setFocusMode] = useState(false);
+  const [focusTaskId, setFocusTaskId] = useState<string | null>(null);
+
+  // Sync i18n with preferences
+  useEffect(() => {
+    if (preferences.language && i18n.language !== preferences.language) {
+      i18n.changeLanguage(preferences.language);
+    }
+  }, [preferences.language, i18n]);
 
   return (
-    <AppContext.Provider value={{ courses, setCourses, tasks, setTasks, ideas, setIdeas, snippets, setSnippets, studySessions, setStudySessions }}>
+    <AppContext.Provider
+      value={{
+        courses, setCourses,
+        tasks, setTasks,
+        ideas, setIdeas,
+        snippets, setSnippets,
+        studySessions, setStudySessions,
+        goals, setGoals,
+        knowledge, setKnowledge,
+        techLibrary, setTechLibrary,
+        habits, setHabits,
+        preferences, setPreferences,
+        focusMode, setFocusMode,
+        focusTaskId, setFocusTaskId,
+      }}
+    >
       {children}
     </AppContext.Provider>
   );
