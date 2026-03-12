@@ -3,6 +3,7 @@ import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { LanguageSwitcher } from "@/components/shared/LanguageSwitcher";
+import { ThemeToggle } from "@/components/shared/ThemeToggle";
 import {
   Sidebar,
   SidebarContent,
@@ -67,14 +68,14 @@ export function AppSidebar() {
   return (
     <Sidebar collapsible="icon" side={isRTL ? "right" : "left"}>
       <SidebarHeader className="p-4">
-        <div className="flex items-center gap-2">
-          <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
-            <Zap className="h-4 w-4 text-primary-foreground" />
+        <div className="flex items-center gap-3">
+          <div className="h-9 w-9 flex-shrink-0">
+            <img src="/logo-icon.png" alt="ThinkStack Icon" className="h-full w-full object-contain" />
           </div>
           {!collapsed && (
-            <span className="text-lg font-bold tracking-tight text-foreground">
-              Think<span className="text-primary">Stack</span>
-            </span>
+            <div className="h-6">
+              <img src="/logo-text.png" alt="ThinkStack" className="h-full object-contain dark:invert" />
+            </div>
           )}
         </div>
       </SidebarHeader>
@@ -131,11 +132,15 @@ export function AppSidebar() {
             <div className="text-[10px] text-muted-foreground/40 font-mono">
               {t("common.version")}
             </div>
-            <LanguageSwitcher />
+            <div className="flex items-center gap-1">
+              <ThemeToggle />
+              <LanguageSwitcher />
+            </div>
           </div>
         )}
         {collapsed && (
-          <div className="flex justify-center w-full">
+          <div className="flex flex-col items-center gap-2 w-full">
+            <ThemeToggle />
             <LanguageSwitcher />
           </div>
         )}

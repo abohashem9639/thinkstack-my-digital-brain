@@ -224,6 +224,19 @@ export function AppProvider({ children }: { children: ReactNode }) {
     }
   }, [preferences.language, i18n]);
 
+  // Sync theme with preferences
+  useEffect(() => {
+    const root = window.document.documentElement;
+    root.classList.remove("light", "dark");
+
+    if (preferences.theme === "system") {
+      const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      root.classList.add(systemTheme);
+    } else {
+      root.classList.add(preferences.theme);
+    }
+  }, [preferences.theme]);
+
   return (
     <AppContext.Provider
       value={{

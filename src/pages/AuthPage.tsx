@@ -9,6 +9,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { LanguageSwitcher } from "@/components/shared/LanguageSwitcher";
+import { ThemeToggle } from "@/components/shared/ThemeToggle";
 import { LuZap as Zap } from "react-icons/lu";
 
 export default function AuthPage() {
@@ -80,8 +81,9 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen flex w-full items-center justify-center p-4">
-      <div className="absolute top-4 right-4 z-20">
+    <div className="h-screen w-full flex items-center justify-center p-4 overflow-hidden" dir={isRTL ? "rtl" : "ltr"}>
+      <div className="absolute top-4 inset-inline-end-4 z-20 flex items-center gap-2">
+        <ThemeToggle />
         <LanguageSwitcher />
       </div>
       <div className="absolute inset-0 bg-background pointer-events-none">
@@ -90,14 +92,11 @@ export default function AuthPage() {
 
       <Card className="w-full max-w-md relative z-10 glass border-primary/20">
         <CardHeader className="space-y-1 text-center">
-          <div className="flex justify-center mb-4">
-            <div className="h-12 w-12 rounded-xl bg-primary flex items-center justify-center">
-              <Zap className="h-6 w-6 text-primary-foreground" />
+          <div className="flex justify-center mb-6">
+            <div className="h-20 w-auto px-6 py-2 rounded-2xl bg-secondary/30 flex items-center justify-center">
+              <img src="/logo-full.png" alt="ThinkStack Logo" className="h-full object-contain dark:invert" />
             </div>
           </div>
-          <CardTitle className="text-2xl font-bold tracking-tight text-foreground">
-            Think<span className="text-primary">Stack</span>
-          </CardTitle>
           <CardDescription>
             {isSignUp
               ? isRTL ? "أنشئ حساباً للبدء" : "Create an account to get started"
@@ -108,7 +107,7 @@ export default function AuthPage() {
           <form onSubmit={handleAuth} className="space-y-4">
             {isSignUp && (
               <div className="space-y-2">
-                <Label htmlFor="fullName">{isRTL ? "الاسم الكامل" : "Full Name"}</Label>
+                <Label htmlFor="fullName" className="text-start block">{isRTL ? "الاسم الكامل" : "Full Name"}</Label>
                 <Input
                   id="fullName"
                   type="text"
@@ -116,12 +115,12 @@ export default function AuthPage() {
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   required
-                  className="bg-secondary/50 border-input"
+                  className="bg-secondary/50 border-input text-start"
                 />
               </div>
             )}
             <div className="space-y-2">
-              <Label htmlFor="email">{isRTL ? "البريد الإلكتروني" : "Email"}</Label>
+              <Label htmlFor="email" className="text-start block">{isRTL ? "البريد الإلكتروني" : "Email"}</Label>
               <Input
                 id="email"
                 type="email"
@@ -129,18 +128,18 @@ export default function AuthPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="bg-secondary/50 border-input"
+                className="bg-secondary/50 border-input text-start"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">{isRTL ? "كلمة المرور" : "Password"}</Label>
+              <Label htmlFor="password" className="text-start block">{isRTL ? "كلمة المرور" : "Password"}</Label>
               <Input
                 id="password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="bg-secondary/50 border-input"
+                className="bg-secondary/50 border-input text-start"
               />
             </div>
             <Button
